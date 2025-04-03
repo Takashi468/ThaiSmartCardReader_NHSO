@@ -1,0 +1,38 @@
+﻿<Window
+    x:Class="ThaiSmartCardReader.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ThaiSmartCardReader"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="800"
+    Height="600"
+    Loaded="Window_Loaded"
+    mc:Ignorable="d">
+    <Grid>
+        <TextBox
+            x:Name="TextBox_Data"
+            Width="707"
+            Height="391"
+            Margin="43,154,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontSize="16"
+            TextWrapping="Wrap" />
+        <Image
+            x:Name="Image_PersonalPhoto"
+            Width="100"
+            Height="126"
+            Margin="43,10,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top" />
+        <TextBlock
+            Margin="0,22,24,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Text="@.Net 9 Is Supported"
+            TextWrapping="Wrap" />
+
+    </Grid>
+</Window>

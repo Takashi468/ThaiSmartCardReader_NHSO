@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using ThaiNationalIDCard;
+using ThaiSmartCardReader.Services;
 
 namespace ThaiSmartCardReader
 {
     public partial class MainWindow : Window
     {
+        private readonly APIService _apiService = new APIService();
         public ThaiIDCard idcard;
         public MainWindow()
         {
@@ -48,7 +50,7 @@ namespace ThaiSmartCardReader
                 }
                 return;
             }
-            Dispatcher.Invoke(() =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 if (personal.PhotoRaw != null)
                 {
@@ -97,7 +99,10 @@ namespace ThaiSmartCardReader
                                      $"Province: {personal.addrProvince}\n" +
                                      $"Religion: {personal.Religion}\n" +    // แสดงศาสนา
                                      $"Under Card Number: {personal.UnderCardNumber}"; // แสดงเลขใต้บัตร
+
+                await LoadNHSODataAsync();
             });
+
         }
 
         private void RemoverCard()
@@ -108,6 +113,7 @@ namespace ThaiSmartCardReader
             {
                 Image_PersonalPhoto.Source = null; 
                 TextBox_Data.Text = string.Empty;   // เคลียร์ข้อมูลใน TextBox
+                TextBox_NHSO.Text = string.Empty;
             });
         }
 
@@ -174,5 +180,28 @@ namespace ThaiSmartCardReader
                 }
             }
         }
+
+        private async Task LoadNHSODataAsync()
+        {
+            var (data, error) = await _apiService.GetNHSODataSmartCardAsync();
+            if (data != null && error == "SUCCESS")
+            {
+                // แสดงผลใน TextBox หรือ Label
+                TextBox_NHSO.Text =
+                    $"สิทธิหลัก: {data.MainInscl} ({data.MainInsclCode})\n" +
+                    $"สิทธิรอง: {data.SubInscl} ({data.SubInsclCode})\n" +
+                    $"โรงพยาบาลหลัก: {data.HospMain?.Hname}\n" +
+                    $"โรงพยาบาลรอง: {data.HospSub?.Hname}\n" +
+                    $"เพศ: {data.Sex}  อายุ: {data.Age}\n" +
+                    $"วันเกิด: {data.BirthDate}\n" +
+                    $"ตรวจสอบล่าสุด: {data.CheckDate?.ToString("dd/MM/yyyy HH:mm")}";
+            }
+            else
+            {
+                Debug.WriteLine($"❌ NHSO Error: {error}");
+                TextBox_NHSO.Text = $"ไม่สามารถดึงข้อมูล NHSO ได้: {error}";
+            }
+        }
+
     }
 }
